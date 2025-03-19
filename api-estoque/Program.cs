@@ -1,4 +1,7 @@
 
+using api_estoque.EntityConfig;
+using Microsoft.EntityFrameworkCore;
+
 namespace api_estoque
 {
     public class Program
@@ -9,9 +12,22 @@ namespace api_estoque
 
 
             builder.Services.AddControllers();
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //   options.UseSqlite("Data Source=app.db"));
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("cors", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -22,15 +38,7 @@ namespace api_estoque
                 app.UseSwaggerUI();
             }
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("cors", builder =>
-                {
-                    builder.AllowAnyOrigin()  
-                           .AllowAnyMethod()   
-                           .AllowAnyHeader();  
-                });
-            });
+
 
             app.UseCors("cors");
 
