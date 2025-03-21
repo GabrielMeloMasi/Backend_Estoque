@@ -16,4 +16,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\" />
+    <Folder Include="ENUM\" />
+  </ItemGroup>
+
 </Project>

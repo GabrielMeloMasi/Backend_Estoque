@@ -4,11 +4,8 @@ namespace api_estoque.Models
 {
     public class ProdutoPerecivel : Produto
     {
-        [NotMappedAttribute]
-        List<Validade> validades = new List<Validade>();
-        public override bool existeProduto()
-        {
-            throw new NotImplementedException();
-        }
+        
+        public override List<Validade> Validades { get; set; } = new List<Validade>();
+
     }
 }
