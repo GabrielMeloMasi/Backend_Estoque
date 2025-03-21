@@ -23,28 +23,7 @@ namespace api_estoque.EntityConfig
             optionsBuilder.UseSqlite("Data Source=app.db");
         }
 
-        using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : DbContext
-    {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
-
-        // DbSets para as tabelas
-        public DbSet<User> Users { get; set; }
-        public DbSet<Estoque> Estoque { get; set; }
-        public DbSet<Produto> Produto { get; set; }
-        public DbSet<EstoqueProduto> EstoqueProdutos { get; set; }
-        public DbSet<Categoria> Categoria { get; set; }
-        public DbSet<Validade> Validade { get; set; }
-        public DbSet<Movimentacao> Movimentacao { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // Configuração do banco SQLite
-            optionsBuilder.UseSqlite("Data Source=app.db");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,4 +75,4 @@ public class AppDbContext : DbContext
         }
     }
 }
-}
+
