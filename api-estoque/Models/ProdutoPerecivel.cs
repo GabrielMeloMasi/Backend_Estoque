@@ -7,5 +7,9 @@ namespace api_estoque.Models
         
         public override List<Validade> Validades { get; set; } = new List<Validade>();
 
+        public override bool PossuiValidade()
+        {
+            return true;
+        }
     }
 }
