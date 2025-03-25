@@ -4,7 +4,7 @@
     {
         public ProdutoBasic()
         {
-            TipoProduto = "basic";
+            TipoProduto = 0;
         }
         public override string Tipo() => "Produto Básico";
     }

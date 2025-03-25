@@ -14,5 +14,7 @@ namespace api_estoque.EntityConfig
         }
 
         public IProdutoRepository CriarProdutoRepository() => new ProdutoRepository(_context);
+
+        public ICategoriaRepository CategoriaRepository() => new CategoriaRepository(_context);
     }
 }

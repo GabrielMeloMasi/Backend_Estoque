@@ -22,7 +22,7 @@ namespace api_estoque.EntityConfig
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EstoqueProduto>().HasKey(ep => new { ep.EstoqueId, ep.ProdutoId });
+            modelBuilder.Entity<EstoqueProduto>().HasKey(ep => ep.Id);
             modelBuilder.Entity<User>().HasKey(ep => ep.Id);
             modelBuilder.Entity<Estoque>().HasKey(ep => ep.Id);
             modelBuilder.Entity<Produto>().HasKey(ep => ep.Id);
@@ -31,14 +31,14 @@ namespace api_estoque.EntityConfig
             modelBuilder.Entity<Movimentacao>().HasKey(ep => ep.Id);
 
             modelBuilder.Entity<Produto>()
-            .HasDiscriminator<string>("TipoProduto")
-            .HasValue<ProdutoBasic>("basic")
-            .HasValue<ProdutoPerecivel>("perecivel");
+            .HasDiscriminator<int>("TipoProduto")
+            .HasValue<ProdutoBasic>(0)
+            .HasValue<ProdutoPerecivel>(1);
 
-            modelBuilder.Entity<ProdutoPerecivel>()
-                .HasMany(p => p.Validades)
-                .WithOne(v => (ProdutoPerecivel)v.Produto)
-                .HasForeignKey(v => v.ProdutoId)
+            modelBuilder.Entity<Validade>()
+                .HasOne(p => p.EstoqueProduto)
+                .WithMany(v => v.Validades)
+                .HasForeignKey(v => v.EstoqueProdutoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<EstoqueProduto>()
@@ -53,14 +53,14 @@ namespace api_estoque.EntityConfig
 
             modelBuilder.Entity<Estoque>()
                 .HasOne(e => e.User)
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
+                .WithOne()
+                .HasForeignKey<Estoque>(e => e.UserId) 
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Movimentacao>()
-                .HasOne(m => m.Produto)
+                .HasOne(m => m.EstoqueProduto)
                 .WithMany()
-                .HasForeignKey(m => m.ProdutoId);
+                .HasForeignKey(m => m.EstoqueProdutoId);
 
             modelBuilder.Entity<Movimentacao>()
                 .HasOne(m => m.User)

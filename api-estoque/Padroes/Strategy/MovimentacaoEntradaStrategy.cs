@@ -6,7 +6,8 @@ namespace api_estoque.Padroes.Strategy
     {
         public double CalcularValorTotal(List<Movimentacao> movimentacoes)
         {
-            return movimentacoes.Where(m => m.Tipo == "entrada").Sum(m => m.Produto.Preco * m.Quantidade);
+   
+           return movimentacoes.Where(m => m.Tipo == "entrada").Sum(m => m.EstoqueProduto.Preco * m.Quantidade);
         }
     }
 }

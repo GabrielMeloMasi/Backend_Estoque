@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
 
-        public int ProdutoId { get; set; }
-        public Produto Produto { get; set; }
+        public int EstoqueProdutoId { get; set; }
+        public EstoqueProduto EstoqueProduto { get; set; }
         public string Tipo { get; set; }
 
         public int UserId { get; set; }
