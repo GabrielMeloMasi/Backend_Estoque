@@ -1,8 +1,8 @@
 ﻿using api_estoque.Models;
 
-namespace api_estoque.Factory
+namespace api_estoque.Padroes.Factory
 {
-    public static  class ProdutoFactory
+    public static class ProdutoFactory
     {
 
         public static Produto CriarProduto(string tipo)
@@ -10,7 +10,7 @@ namespace api_estoque.Factory
             return tipo switch
             {
                 "perecivel" => new ProdutoPerecivel(),
-                "duravel" => new ProdutoBasic(),
+                "basic" => new ProdutoBasic(),
                 _ => throw new ArgumentException("Tipo inválido")
             };
         }

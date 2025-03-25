@@ -18,11 +18,6 @@ namespace api_estoque.EntityConfig
         public DbSet<Movimentacao> Movimentacao { get; set; }
 
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=app.db");
-        }
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,11 +30,16 @@ namespace api_estoque.EntityConfig
             modelBuilder.Entity<Categoria>().HasKey(ep => ep.Id);
             modelBuilder.Entity<Movimentacao>().HasKey(ep => ep.Id);
 
-            modelBuilder.Entity<Validade>()
-                .HasOne(v => v.Produto)
-                .WithMany(p => p.Validades)
+            modelBuilder.Entity<Produto>()
+            .HasDiscriminator<string>("TipoProduto")
+            .HasValue<ProdutoBasic>("basic")
+            .HasValue<ProdutoPerecivel>("perecivel");
+
+            modelBuilder.Entity<ProdutoPerecivel>()
+                .HasMany(p => p.Validades)
+                .WithOne(v => (ProdutoPerecivel)v.Produto)
                 .HasForeignKey(v => v.ProdutoId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<EstoqueProduto>()
                 .HasOne(ep => ep.Estoque)
@@ -48,7 +48,7 @@ namespace api_estoque.EntityConfig
 
             modelBuilder.Entity<EstoqueProduto>()
                 .HasOne(ep => ep.Produto)
-                .WithMany(p => p.EstoqueProdutos)
+                .WithMany()
                 .HasForeignKey(ep => ep.ProdutoId);
 
             modelBuilder.Entity<Estoque>()
@@ -67,7 +67,7 @@ namespace api_estoque.EntityConfig
                 .WithMany()
                 .HasForeignKey(m => m.UserId);
 
-            modelBuilder.Entity<Produto>()
+            modelBuilder.Entity<Produto>() 
                 .HasOne(p => p.Categoria)
                 .WithMany()
                 .HasForeignKey(p => p.CategoriaId);

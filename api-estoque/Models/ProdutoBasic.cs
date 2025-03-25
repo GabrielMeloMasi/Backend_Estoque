@@ -2,9 +2,10 @@
 {
     public class ProdutoBasic : Produto
     {
-        public override bool PossuiValidade()
+        public ProdutoBasic()
         {
-            return false;
+            TipoProduto = "basic";
         }
+        public override string Tipo() => "Produto Básico";
     }
 }

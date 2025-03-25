@@ -12,8 +12,11 @@ namespace api_estoque
 
 
             builder.Services.AddControllers();
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //   options.UseSqlite("Data Source=app.db"));
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlite("Data Source=app.db"));
+
+            builder.Services.AddScoped<IRepositoryFactory, DbRepositoryFactory>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

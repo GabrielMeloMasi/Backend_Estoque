@@ -4,12 +4,14 @@ namespace api_estoque.Models
 {
     public class ProdutoPerecivel : Produto
     {
-        
-        public override List<Validade> Validades { get; set; } = new List<Validade>();
 
-        public override bool PossuiValidade()
+        public List<Validade> Validades { get; set; } = new();
+
+        public ProdutoPerecivel()
         {
-            return true;
+            TipoProduto = "perecivel";
         }
+
+        public override string Tipo() => "Produto Perecível";
     }
 }
