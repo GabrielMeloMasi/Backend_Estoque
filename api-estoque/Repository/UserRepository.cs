@@ -3,16 +3,18 @@ using api_estoque.EntityConfig;
 using api_estoque.Interface;
 using api_estoque.Models;
 using api_estoque.Padroes.Singleton;
+using System.Diagnostics.Eventing.Reader;
 
 namespace api_estoque.Repository
 {
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-
-        public UserRepository(AppDbContext context)
+        private readonly IEstoqueRepository _estoqueRepository;
+        public UserRepository(AppDbContext context, IEstoqueRepository estoqueRepository)
         {
             _context = context;
+            _estoqueRepository = estoqueRepository;
         }
         public List<User> GetAll()
         {
@@ -26,18 +28,35 @@ namespace api_estoque.Repository
 
         public User LoginUser(UserLoginDTO user)
         {
-            User usarioLogado = GetByEmail(user.Email);
-
-            if (usarioLogado == default)
+            try
             {
-              
-               User userNew = Salvar(new User { Email = user.Email, Name = user.Nome });
-                UserSingleton.Instance.DefinirUsuario(userNew);
-                return userNew;
-            }
+                User usuarioLogado = GetByEmail(user.Email);
 
-            UserSingleton.Instance.DefinirUsuario(usarioLogado);
-            return usarioLogado;
+                if (usuarioLogado == default)
+                {
+
+                    User userNew = Salvar(new User { Email = user.Email, Name = user.Nome });
+                    UserSingleton.Instance.DefinirUsuario(userNew);
+
+                    Estoque estoque = _estoqueRepository.Create(userNew.Id);
+                    EstoqueSingleton.Instance.DefinirEstoque(estoque);
+                    return userNew;
+                }
+                else
+                {
+                    Estoque estoque = _estoqueRepository.GetById(usuarioLogado.Id);
+                    EstoqueSingleton.Instance.DefinirEstoque(estoque);
+                    UserSingleton.Instance.DefinirUsuario(usuarioLogado);
+                }
+
+
+                return usuarioLogado;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
         }
 
         private User GetByEmail(string email) {

@@ -4,7 +4,10 @@ namespace api_estoque.EntityConfig
 {
     public interface IRepositoryFactory
     {
-        IProdutoRepository CriarProdutoRepository();
+        IProdutoRepository ProdutoRepository();
         ICategoriaRepository CategoriaRepository();
+        IEstoqueRepository EstoqueRepository();
+        IUserRepository UserRepository();
+        IMovimentacaoRepository MovimentacaoRepository();
     }
 }

@@ -11,10 +11,14 @@ namespace api_estoque.EntityConfig
         public DbRepositoryFactory(AppDbContext context)
         {
             _context = context;
+     
         }
 
-        public IProdutoRepository CriarProdutoRepository() => new ProdutoRepository(_context);
-
+        public IProdutoRepository ProdutoRepository() => new ProdutoRepository(_context);
         public ICategoriaRepository CategoriaRepository() => new CategoriaRepository(_context);
+        public IEstoqueRepository EstoqueRepository() => new EstoqueRepository(_context);
+        public IUserRepository UserRepository() => new UserRepository(_context, EstoqueRepository());
+        public IMovimentacaoRepository MovimentacaoRepository() => new MovimentacaoRepository(_context);
+
     }
 }

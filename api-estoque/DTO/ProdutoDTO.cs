@@ -12,7 +12,7 @@ namespace api_estoque.DTO
         public double Preco { get; set; }
         public int CategoriaId { get; set; }
         public Categoria? Categoria { get; set; }
-        public string TipoProduto { get; set; }
+        public int TipoProduto { get; set; }
         public List<Validade>? Validades { get; set; } = new();
     }
 }
