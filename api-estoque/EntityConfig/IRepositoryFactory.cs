@@ -9,5 +9,6 @@ namespace api_estoque.EntityConfig
         IEstoqueRepository EstoqueRepository();
         IUserRepository UserRepository();
         IMovimentacaoRepository MovimentacaoRepository();
+        IValidadeRepository ValidadeRepository();
     }
 }
