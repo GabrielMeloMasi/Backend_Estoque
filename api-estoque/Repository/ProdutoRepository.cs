@@ -69,7 +69,56 @@ namespace api_estoque.Repository
 
         public void EntradaProduto(ProdutoDTO produto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Produto newProduto;
+                if (produto.Validades.Any())
+                {
+                    newProduto = ProdutoFactory.CriarProduto("perecivel");
+
+                    newProduto.TipoProduto = 1;
+                    foreach (Validade val in produto.Validades)
+                    {
+                        val.EstoqueProduto.ProdutoId = produto.Id;
+                        val.EstoqueProduto.EstoqueId = EstoqueSingleton.Instance.Estoque.Id;
+                        _validateRepository.Editar(val);
+                    }
+                }
+                else
+                {
+                    newProduto = ProdutoFactory.CriarProduto("basic");
+                    newProduto.TipoProduto = 0;
+                }
+
+                newProduto.CategoriaId = produto.CategoriaId;
+                newProduto.Nome = produto.Nome;
+                newProduto.Descricao = produto.Descricao;
+
+                _context.Produto.Add(newProduto);
+                _context.SaveChanges();
+
+                SetNewEstoqueProduto(newProduto.Id);
+
+                //adicionar movimentação de entrada
+            }
+            catch (Exception e)
+            {
+                {
+                    throw new Exception("Falha ao realizar a entrada de produto ", e);
+                }
+            }
+        }
+
+        private void SetNewEstoqueProduto(int idProduto)
+        {
+            EstoqueProduto estoqueprod = new EstoqueProduto
+            {
+                EstoqueId = EstoqueSingleton.Instance.Estoque.Id,
+                ProdutoId = idProduto,
+            };
+
+            _context.EstoqueProdutos.Add(estoqueprod);
+            _context.SaveChanges();
         }
 
         public List<ProdutoDTO> GetAllProduto()
