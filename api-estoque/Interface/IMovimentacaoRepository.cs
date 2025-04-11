@@ -10,7 +10,6 @@ namespace api_estoque.Interface
         List<Movimentacao> GetAll();
         List<Movimentacao> GetProduto(int idProduto);
         List<Movimentacao> GetTipo(string tipoMovimentacao);
-        List<FilterDTO> Filter(JsonObject filterDTO);
 
     }
 }

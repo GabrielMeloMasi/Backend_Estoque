@@ -17,12 +17,12 @@ namespace api_estoque.EntityConfig
      
         }
 
-        public IProdutoRepository ProdutoRepository() => new ProdutoRepository(_context);
         public ICategoriaRepository CategoriaRepository() => new CategoriaRepository(_context);
         public IEstoqueRepository EstoqueRepository() => new EstoqueRepository(_context);
         public IUserRepository UserRepository() => new UserRepository(_context, EstoqueRepository());
         public IMovimentacaoRepository MovimentacaoRepository() => new MovimentacaoRepository(_context);
         public IValidadeRepository ValidadeRepository() => new ValidadeRepository(_context);
-        
+        public IProdutoRepository ProdutoRepository() => new ProdutoRepository(_context, MovimentacaoRepository(), ValidadeRepository());
+
     }
 }
