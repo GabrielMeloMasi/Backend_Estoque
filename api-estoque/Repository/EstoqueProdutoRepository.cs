@@ -14,7 +14,7 @@ namespace api_estoque.Repository
             _context = context;
         }
 
-        public EstoqueProduto Edit(int IdProduto, int quantidade, double preco)
+        public EstoqueProduto Edit(int? IdProduto, int quantidade, double preco)
         {
             try
             {
@@ -36,11 +36,11 @@ namespace api_estoque.Repository
             }
         }
 
-        public EstoqueProduto Entrada(int IdProduto, int quantidade, double preco)
+        public EstoqueProduto Entrada(int? IdProduto, int quantidade, double preco)
         {
             try
             {
-                EstoqueProduto estprod = _context.EstoqueProdutos.FirstOrDefault(e => e.ProdutoId == IdProduto);
+                EstoqueProduto estprod = _context.EstoqueProdutos.FirstOrDefault(e => e.ProdutoId == IdProduto && e.EstoqueId == EstoqueSingleton.Instance.Estoque.Id);
 
                 if (estprod != null)
                 {
@@ -48,6 +48,10 @@ namespace api_estoque.Repository
                     estprod.Preco = preco;
 
                     _context.Entry(estprod).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                }
+                else
+                {
+                    estprod = SaveNew(IdProduto, quantidade, preco);
                 }
 
                 return estprod;
@@ -58,7 +62,7 @@ namespace api_estoque.Repository
             }
         }
 
-        public EstoqueProduto Saida(int IdProduto, int quantidade)
+        public EstoqueProduto Saida(int? IdProduto, int quantidade)
         {
             try
             {
@@ -79,14 +83,14 @@ namespace api_estoque.Repository
             }
         }
 
-        public EstoqueProduto SaveNew(int IdProduto, int quantidade, double preco)
+        public EstoqueProduto SaveNew(int? IdProduto, int quantidade, double preco)
         {
             try
             {
                 EstoqueProduto estoqueprod = new EstoqueProduto
                 {
                     EstoqueId = EstoqueSingleton.Instance.Estoque.Id,
-                    ProdutoId = IdProduto,
+                    ProdutoId = (int) IdProduto,
                     Quantidade = quantidade,
                     Preco = preco
                 };
@@ -103,6 +107,5 @@ namespace api_estoque.Repository
 
         }
 
-        
     }
 }

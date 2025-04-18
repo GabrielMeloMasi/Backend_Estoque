@@ -1,6 +1,7 @@
 ﻿using api_estoque.DTO;
 using api_estoque.EntityConfig;
 using api_estoque.Interface;
+using api_estoque.Padroes.Facade;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api_estoque.Controllers
@@ -10,10 +11,12 @@ namespace api_estoque.Controllers
     public class ProdutoController : ControllerBase
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IProdutoFacade _produtoFacade;
 
-        public ProdutoController(IRepositoryFactory repositoryFactory)
+        public ProdutoController(IRepositoryFactory repositoryFactory, IServiceFactory serviceFactory)
         {
             _produtoRepository = repositoryFactory.ProdutoRepository();
+            _produtoFacade = serviceFactory.ProdutoFacade();
         }
 
         [HttpGet]
@@ -52,8 +55,7 @@ namespace api_estoque.Controllers
         {
             try
             {
-                _produtoRepository.EntradaProduto(produto);
-                return Ok("Entrada realizada com sucesso.");
+                return Created("Produto/{id}", _produtoFacade.EntradaProduto(produto));
             }
             catch (Exception ex)
             {
@@ -66,7 +68,7 @@ namespace api_estoque.Controllers
         {
             try
             {
-                _produtoRepository.SaidaProduto(produto);
+                _produtoFacade.SaidaProduto(produto);
                 return Ok("Saída realizada com sucesso.");
             }
             catch (Exception ex)
@@ -80,7 +82,7 @@ namespace api_estoque.Controllers
         {
             try
             {
-                _produtoRepository.EditProduto(produto);
+                _produtoFacade.Edit(produto);
                 return Ok("Produto editado com sucesso.");
             }
             catch (Exception ex)

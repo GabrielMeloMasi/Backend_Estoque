@@ -2,6 +2,7 @@
 using api_estoque.Interface;
 using api_estoque.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace api_estoque.Repository
 {
@@ -60,6 +61,7 @@ namespace api_estoque.Repository
             }
             catch (Exception ex)
             {
+                throw ex;
             }
         }
 
@@ -69,15 +71,24 @@ namespace api_estoque.Repository
         }
 
 
-        public void Save(Validade validade)
+        public Validade Save(int estoqueProId, DateTime data, int quantidade)
         {
             try
             {
-                _context.Add(validade);
+                Validade val = new Validade { 
+                    EstoqueProdutoId = estoqueProId,
+                    Quantidade = quantidade,
+                    DataValidade = data
+                };
+
+                _context.Validade.Add(val);
                 _context.SaveChanges();
+
+                return val;
             }
             catch (Exception ex)
             {
+                throw ex;
             }
 
         }
@@ -87,5 +98,51 @@ namespace api_estoque.Repository
             return _context.Validade.FirstOrDefault(x => x.Id == id);
         }
 
+        public bool Saida(int estoqueProdId, int quantidade)
+        {
+
+            try
+            {
+                var validades = GetValidadeList(estoqueProdId)
+                           .OrderBy(v => v.DataValidade)
+                           .ToList();
+
+                if (!validades.Any())
+                    return false;
+
+                int quantidadeRestante = quantidade;
+
+                foreach (var validade in validades)
+                {
+                    if (quantidadeRestante <= 0)
+                        break;
+
+                    if (validade.Quantidade <= quantidadeRestante)
+                    {
+                        quantidadeRestante -= validade.Quantidade;
+                        _context.Validade.Remove(validade);
+                    }
+                    else
+                    {
+                        validade.Quantidade -= quantidadeRestante;
+                        quantidadeRestante = 0;
+                        _context.Validade.Update(validade);
+                    }
+                }
+
+                if (quantidadeRestante > 0)
+                    return false;
+
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+           
+        
     }
+    
 }

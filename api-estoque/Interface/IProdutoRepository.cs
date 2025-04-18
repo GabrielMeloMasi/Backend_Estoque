@@ -13,8 +13,7 @@ namespace api_estoque.Interface
         Produto EditProduto(Produto produto);
         void DeleteProduto(int id);
         List<ProdutoDTO> ProdutoPorCategoria(int idCategoria);
-        void EntradaProduto(EntradaDTO produto);
-        void SaidaProduto(SaidaDTO produto);
+        Produto EntradaProduto(Produto produto);
 
 
     }
