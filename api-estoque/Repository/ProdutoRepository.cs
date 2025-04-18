@@ -85,58 +85,64 @@ namespace api_estoque.Repository
 
         }
 
-        public void EntradaProduto(ProdutoDTO produto)
+       //arrumar
+        public void EntradaProduto(EntradaDTO produto)
         {
             try
             {
-                // Verifica se o produto já existe
-                var produtoExistente = _context.Produto
-                    .Include(p => p.EstoqueProduto)
-                        .ThenInclude(e => e.Validades)
-                    .FirstOrDefault(p => p.Id == produto.Id);
+                var estoqueId = EstoqueSingleton.Instance.Estoque.Id;
 
-                if (produtoExistente != null)
+                // Busca o produto existente com estoque vinculado ao estoque atual
+                var produtoExistente = _context.Produto.FirstOrDefault(p => p.Id == produto.Id);
+
+
+
+                if (produtoExistente != null )
                 {
+                    var estoqueProduto = _context.EstoqueProdutos
+                    .Include(e => e.Validades)
+                    .FirstOrDefault(e => e.ProdutoId == produto.Id && e.EstoqueId == estoqueId);
 
-                    var estoque = produtoExistente.EstoqueProduto;
-
-                    if (produtoExistente.TipoProduto == 1 && produto.Validades.Any())
+                    // Produto existente no estoque
+                    if (produtoExistente.TipoProduto == 1 && produto.DataValidade != null)
                     {
-                        foreach (var novaValidade in produto.Validades)
-                        {
-                            
-                            var validadeExistente = estoque.Validades
-                                .FirstOrDefault(v => v.DataValidade.Date == novaValidade.DataValidade.Date);
+                        
+                            var validadeExistente = estoqueProduto.Validades
+                                .FirstOrDefault(v => v.DataValidade.Date == produto.DataValidade);
 
                             if (validadeExistente != null)
                             {
-                                validadeExistente.Quantidade += novaValidade.Quantidade;
+                                validadeExistente.Quantidade += produto.Quantidade;
                             }
                             else
                             {
-                                novaValidade.EstoqueProdutoId = estoque.Id;
-                                _context.Validade.Add(novaValidade);
+                                 Validade val = new Validade
+                                 {
+                                    EstoqueProdutoId = estoqueProduto.Id,
+                                    Quantidade = produto.Quantidade,
+                                    DataValidade = produto.DataValidade
+                                };
+                                _context.Validade.Add(val);
                             }
-                        }
+                        
                     }
 
-                    estoque.Quantidade += produto.QuantTotal;
+                    estoqueProduto.Quantidade += produto.Quantidade;
 
                     _context.SaveChanges();
 
-                   
                     var movimentacao = new MovimentacaoContext();
                     movimentacao.SetStrategy(new MovimentacaoEntradaStrategy(_context));
-                    movimentacao.SalvarMovimentacao(estoque.Id, produto.QuantTotal);
+                    movimentacao.SalvarMovimentacao(estoqueProduto.Id, produto.Quantidade);
                 }
                 else
                 {
-                    
-                    Produto novoProduto = produto.Validades.Any()
+                    // Produto novo
+                    Produto novoProduto = produto.DataValidade != null
                         ? ProdutoFactory.CriarProduto("perecivel")
                         : ProdutoFactory.CriarProduto("basic");
 
-                    novoProduto.TipoProduto = produto.Validades.Any() ? 1 : 0;
+                    novoProduto.TipoProduto = produto.DataValidade != null ? 1 : 0;
                     novoProduto.Nome = produto.Nome;
                     novoProduto.Descricao = produto.Descricao;
                     novoProduto.CategoriaId = produto.CategoriaId;
@@ -144,30 +150,34 @@ namespace api_estoque.Repository
                     _context.Produto.Add(novoProduto);
                     _context.SaveChanges();
 
-                    var novoEstoque = new EstoqueProduto
+                    var novoEstoqueProduto = new EstoqueProduto
                     {
                         ProdutoId = novoProduto.Id,
-                        EstoqueId = EstoqueSingleton.Instance.Estoque.Id,
-                        Quantidade = produto.QuantTotal,
+                        EstoqueId = estoqueId,
+                        Quantidade = produto.Quantidade,
                         Preco = produto.Preco
                     };
 
-                    _context.EstoqueProdutos.Add(novoEstoque);
+                    _context.EstoqueProdutos.Add(novoEstoqueProduto);
                     _context.SaveChanges();
 
-                    if (novoProduto.TipoProduto == 1)
+                    if (novoProduto.TipoProduto == 1 && produto.DataValidade != null)
                     {
-                        foreach (var validade in produto.Validades)
+
+                        Validade val = new Validade
                         {
-                            validade.EstoqueProdutoId = novoEstoque.Id;
-                            _context.Validade.Add(validade);
-                        }
+                            EstoqueProdutoId = novoEstoqueProduto.Id,
+                            Quantidade = produto.Quantidade,
+                            DataValidade = produto.DataValidade
+                        };
+                        _context.Validade.Add(val);
+
                         _context.SaveChanges();
                     }
 
                     var movimentacao = new MovimentacaoContext();
                     movimentacao.SetStrategy(new MovimentacaoEntradaStrategy(_context));
-                    movimentacao.SalvarMovimentacao(novoEstoque.Id, produto.QuantTotal);
+                    movimentacao.SalvarMovimentacao(novoEstoqueProduto.Id, produto.Quantidade);
                 }
             }
             catch (Exception e)
@@ -288,16 +298,16 @@ namespace api_estoque.Repository
         }
 
 
-        public void SaidaProduto(ProdutoDTO produto)
+        public void SaidaProduto(SaidaDTO produto)
         {
             var estoqueProduto = _context.EstoqueProdutos
                 .Include(e => e.Validades)
-                .FirstOrDefault(e => e.ProdutoId == produto.Id);
+                .FirstOrDefault(e => e.ProdutoId == produto.Id && e.EstoqueId == EstoqueSingleton.Instance.Estoque.Id);
 
             if (estoqueProduto == null)
                 throw new Exception("Produto não encontrado no estoque.");
 
-            int quantidadeParaRetirar = produto.QuantTotal;
+            int quantidadeParaRetirar = produto.Quantidade;
 
             var validadesOrdenadas = estoqueProduto.Validades
                 .OrderBy(v => v.DataValidade)
@@ -328,7 +338,7 @@ namespace api_estoque.Repository
             //Strategy
             var movimentacao = new MovimentacaoContext();
             movimentacao.SetStrategy(new MovimentacaoSaidaStrategy(_context));
-            movimentacao.SalvarMovimentacao(estoqueProduto.Id, produto.QuantTotal);
+            movimentacao.SalvarMovimentacao(estoqueProduto.Id, produto.Quantidade);
         }
 
 
