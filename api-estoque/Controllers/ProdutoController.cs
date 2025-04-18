@@ -48,7 +48,7 @@ namespace api_estoque.Controllers
         }
 
         [HttpPost("entrada")]
-        public IActionResult EntradaProduto([FromBody] ProdutoDTO produto)
+        public IActionResult EntradaProduto([FromBody] EntradaDTO produto)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace api_estoque.Controllers
         }
 
         [HttpPost("saida")]
-        public IActionResult SaidaProduto([FromBody] ProdutoDTO produto)
+        public IActionResult SaidaProduto([FromBody] SaidaDTO produto)
         {
             try
             {

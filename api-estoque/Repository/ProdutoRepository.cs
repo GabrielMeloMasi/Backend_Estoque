@@ -85,7 +85,7 @@ namespace api_estoque.Repository
 
         }
 
-       //arrumar
+       
         public void EntradaProduto(EntradaDTO produto)
         {
             try
@@ -137,7 +137,7 @@ namespace api_estoque.Repository
                 }
                 else
                 {
-                    // Produto novo
+                    
                     Produto novoProduto = produto.DataValidade != null
                         ? ProdutoFactory.CriarProduto("perecivel")
                         : ProdutoFactory.CriarProduto("basic");
