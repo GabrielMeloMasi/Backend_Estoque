@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Padroes\TemplateMethod\**" />
+    <Content Remove="Padroes\TemplateMethod\**" />
+    <EmbeddedResource Remove="Padroes\TemplateMethod\**" />
+    <None Remove="Padroes\TemplateMethod\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Padroes\Strategy\MovimentacaoTotalStrategy .cs" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using api_estoque.DTO;
+using api_estoque.Models;
 
 namespace api_estoque.Interface
 {
@@ -9,7 +10,7 @@ namespace api_estoque.Interface
         ProdutoDTO GetById(int id);
         List<ProdutoDTO> GetProdutoParaReposicao();
         //void SaveProduto(ProdutoDTO produto);
-        void EditProduto(ProdutoDTO produto);
+        Produto EditProduto(Produto produto);
         void DeleteProduto(int id);
         List<ProdutoDTO> ProdutoPorCategoria(int idCategoria);
         void EntradaProduto(EntradaDTO produto);

@@ -47,36 +47,60 @@ namespace api_estoque.Repository
         }
 
 
-        public void EditProduto(ProdutoDTO produto)
+        //public void EditProduto(ProdutoDTO produto)
+        //{
+        //    try
+        //    {
+        //        Produto newProduto;
+        //        if (produto.Validades.Any())
+        //        {
+        //            newProduto = ProdutoFactory.CriarProduto("perecivel");
+
+        //            newProduto.TipoProduto = 1;
+        //            foreach (Validade val in produto.Validades)
+        //            {
+        //                val.EstoqueProduto.ProdutoId = produto.Id;
+        //                val.EstoqueProduto.EstoqueId = EstoqueSingleton.Instance.Estoque.Id;
+        //                _validateRepository.Editar(val);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            newProduto = ProdutoFactory.CriarProduto("basic");
+        //            newProduto.TipoProduto = 0;
+        //        }
+
+        //        newProduto.Id = produto.Id;
+        //        newProduto.CategoriaId = produto.CategoriaId;
+        //        newProduto.Nome = produto.Nome;
+        //        newProduto.Descricao = produto.Descricao;
+
+        //        _context.Entry(newProduto).State = EntityState.Modified;
+        //        _context.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Erro ao editar o produto ", ex);
+        //    }
+
+        //}
+
+
+        public Produto EditProduto(Produto produto)
         {
             try
             {
-                Produto newProduto;
-                if (produto.Validades.Any())
-                {
-                    newProduto = ProdutoFactory.CriarProduto("perecivel");
+               Produto prod =  _context.Produto.FirstOrDefault(p => p.Id == produto.Id);
 
-                    newProduto.TipoProduto = 1;
-                    foreach (Validade val in produto.Validades)
-                    {
-                        val.EstoqueProduto.ProdutoId = produto.Id;
-                        val.EstoqueProduto.EstoqueId = EstoqueSingleton.Instance.Estoque.Id;
-                        _validateRepository.Editar(val);
-                    }
-                }
-                else
+                if(prod != null)
                 {
-                    newProduto = ProdutoFactory.CriarProduto("basic");
-                    newProduto.TipoProduto = 0;
+                    prod = produto;
+                    _context.Entry(prod).State = EntityState.Modified;
+                    _context.SaveChanges();
                 }
 
-                newProduto.Id = produto.Id;
-                newProduto.CategoriaId = produto.CategoriaId;
-                newProduto.Nome = produto.Nome;
-                newProduto.Descricao = produto.Descricao;
 
-                _context.Entry(newProduto).State = EntityState.Modified;
-                _context.SaveChanges();
+                return prod;
             }
             catch (Exception ex)
             {
@@ -85,7 +109,7 @@ namespace api_estoque.Repository
 
         }
 
-       
+
         public void EntradaProduto(EntradaDTO produto)
         {
             try
@@ -128,6 +152,8 @@ namespace api_estoque.Repository
                     }
 
                     estoqueProduto.Quantidade += produto.Quantidade;
+
+                    _context.Entry(produtoExistente).State = EntityState.Modified;
 
                     _context.SaveChanges();
 
