@@ -4,16 +4,17 @@ namespace api_estoque.Padroes.Strategy
 {
     public class MovimentacaoContext
     {
-        private readonly IMovimentacaoStrategy _strategy;
 
-        public MovimentacaoContext(IMovimentacaoStrategy strategy)
+        private IMovimentacaoStrategy _strategy;
+
+        public void SetStrategy(IMovimentacaoStrategy strategy)
         {
             _strategy = strategy;
         }
 
-        public double Calcular(List<Movimentacao> movimentacoes)
+        public void SalvarMovimentacao(int estoqueProdutoId, int quantidade)
         {
-            return _strategy.CalcularValorTotal(movimentacoes);
+            _strategy.Salvar(estoqueProdutoId, quantidade);
         }
     }
 }

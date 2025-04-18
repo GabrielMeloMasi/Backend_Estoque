@@ -1,6 +1,7 @@
 ﻿using api_estoque.EntityConfig;
 using api_estoque.Interface;
 using api_estoque.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api_estoque.Repository
 {
@@ -42,6 +43,8 @@ namespace api_estoque.Repository
             if (categoriaBanco != null)
             {
                 categoriaBanco = categoria;
+
+                _context.Entry(categoriaBanco).State = EntityState.Modified;
                 _context.SaveChanges();
             }
         }

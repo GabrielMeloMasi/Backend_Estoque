@@ -1,4 +1,5 @@
 ﻿using api_estoque.DTO;
+using api_estoque.EntityConfig;
 using api_estoque.Interface;
 using api_estoque.Models;
 using api_estoque.Repository;
@@ -14,9 +15,9 @@ namespace api_estoque.Controllers
 
         private readonly IUserRepository _userRepository;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IRepositoryFactory repositoryFactory)
         {
-            _userRepository = userRepository;
+            _userRepository = repositoryFactory.UserRepository();
         }
 
         [HttpPost("login")]

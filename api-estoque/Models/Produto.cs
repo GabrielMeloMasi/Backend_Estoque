@@ -1,4 +1,6 @@
-﻿namespace api_estoque.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace api_estoque.Models
 {
     public abstract class Produto
     {
@@ -13,6 +15,10 @@
 
 
         public abstract string Tipo();
+
+        [NotMapped]
+        public EstoqueProduto EstoqueProduto { get; set; }
+
 
     }
 }

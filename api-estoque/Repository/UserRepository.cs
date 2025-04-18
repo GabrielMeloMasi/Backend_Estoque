@@ -3,6 +3,7 @@ using api_estoque.EntityConfig;
 using api_estoque.Interface;
 using api_estoque.Models;
 using api_estoque.Padroes.Singleton;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Eventing.Reader;
 
 namespace api_estoque.Repository
@@ -86,6 +87,8 @@ namespace api_estoque.Repository
             if(usuarioBanco == default)
             {
                 usuarioBanco = user;
+
+                _context.Entry(usuarioBanco).State = EntityState.Modified;
                 _context.SaveChanges();
             }
         }

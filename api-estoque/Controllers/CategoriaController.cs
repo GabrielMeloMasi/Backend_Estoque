@@ -1,4 +1,5 @@
-﻿using api_estoque.Interface;
+﻿using api_estoque.EntityConfig;
+using api_estoque.Interface;
 using api_estoque.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,9 @@ namespace api_estoque.Controllers
     {
         private readonly ICategoriaRepository _categoriaRepository;
 
-        public CategoriaController(ICategoriaRepository categoriaRepository)
+        public CategoriaController(IRepositoryFactory repositoryFactory)
         {
-            _categoriaRepository = categoriaRepository;
+            _categoriaRepository = repositoryFactory.CategoriaRepository();
         }
 
         [HttpGet("getAll")]

@@ -6,6 +6,6 @@ namespace api_estoque.Padroes.Strategy
     public interface IMovimentacaoStrategy
     {
 
-        double CalcularValorTotal(List<Movimentacao> movimentacoes);
+         void Salvar(int estoqueProdutoId, int quantidade);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace api_estoque.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace api_estoque.Models
 {
     public class EstoqueProduto
     {
@@ -11,6 +13,7 @@
         public int Quantidade { get; set; }
         public double Preco { get; set; }
 
-        public List<Validade>? Validades { get; set; }
+        [NotMapped]
+        public List<Validade>? Validades { get; set; } = new List<Validade>();
     }
 }
