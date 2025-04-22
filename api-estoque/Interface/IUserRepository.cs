@@ -6,7 +6,7 @@ namespace api_estoque.Interface
 {
     public interface IUserRepository
     {
-        User LoginUser(UserLoginDTO user);
+        User LoginUser(User user);
         User GetById (int id);
         List<User> GetAll();
         User Salvar (User user);

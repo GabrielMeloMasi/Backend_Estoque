@@ -21,7 +21,7 @@ namespace api_estoque.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserLoginDTO user)
+        public IActionResult Login(User user)
         {
             try
             {

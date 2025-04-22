@@ -27,7 +27,7 @@ namespace api_estoque.Repository
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public User LoginUser(UserLoginDTO user)
+        public User LoginUser(User user)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace api_estoque.Repository
                 if (usuarioLogado == default)
                 {
 
-                    User userNew = Salvar(new User { Email = user.Email, Name = user.Nome });
+                    User userNew = Salvar(new User { Email = user.Email, Name = user.Name, Telefone = user.Telefone });
                     UserSingleton.Instance.DefinirUsuario(userNew);
 
                     Estoque estoque = _estoqueRepository.Create(userNew.Id);
