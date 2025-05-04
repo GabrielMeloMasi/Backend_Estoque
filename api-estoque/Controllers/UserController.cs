@@ -76,5 +76,24 @@ namespace api_estoque.Controllers
                 return BadRequest(ex);
             }
         }
+
+       [HttpDelete("delete")]
+        public IActionResult DeleteUser([FromQuery] int id)
+        {
+            try
+            {
+            var existingUser = _userRepository.GetById(id);
+            if (existingUser == null)
+                return NotFound();
+
+            _userRepository.DeleteUser(id);
+                    return Ok(new { message = "Usuário deletado com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

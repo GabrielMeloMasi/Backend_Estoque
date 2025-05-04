@@ -11,6 +11,7 @@ namespace api_estoque.Interface
         List<User> GetAll();
         User Salvar (User user);
         void Editar(User user);
+        void DeleteUser(int id);
 
     }
 }
